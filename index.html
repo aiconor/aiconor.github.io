@@ -369,6 +369,17 @@
 
           
           
+            <span id="/2019/06/27/反射、动态代理及AOP/" class="leancloud_visitors" data-flag-title="什么是反射、动态代理和AOP？">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
 
           
 
@@ -391,35 +402,21 @@
       
         
           
-            <h2 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h2><h3 id="反射的概念"><a href="#反射的概念" class="headerlink" title="反射的概念"></a>反射的概念</h3><p>在Java虚拟机的运行状态中，对于任意一个类对象，都能够随意调用其任意方法和属性，像这样动态获取其信息和方法功能称为Java语言的反射机制。<br>要想利用反射调用这个类，必须要先用类加载器加载该类的字节码文件对象。</p>
-<h4 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h4><p>每一个类对象对应着一个class文件，用来描述该类的结构信息。</p>
-<h5 id="类加载器的分类："><a href="#类加载器的分类：" class="headerlink" title="类加载器的分类："></a>类加载器的分类：</h5><p><strong>1.BootstrapClassLoder：根加载器。</strong><br>加载 int.class String System StringBuilder 等jkd自带的这些类，都是一些非常基础的类。<br><strong>2.PlatformClassLoder类：平台加载器 拓展类加载器。</strong><br>加载 jre核心类库。（不常用的类，以及拓展的类，例如：javax包下）<br><strong>3.AppClassLoder类：系统加载器。</strong><br>负责加载自己写的类。</p>
-<h4 id="class文件里面包含类的结构信息："><a href="#class文件里面包含类的结构信息：" class="headerlink" title="class文件里面包含类的结构信息："></a>class文件里面包含类的结构信息：</h4><h5 id="1-class文件-Class-这个类表示-class文件"><a href="#1-class文件-Class-这个类表示-class文件" class="headerlink" title="1.class文件  Class 这个类表示 class文件"></a>1.class文件  Class 这个类表示 class文件</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">User user = <span class="keyword">new</span> User();</span><br><span class="line">Class userClass = user.getClass();</span><br></pre></td></tr></table></figure>
-
-<h5 id="2-构造方法-Constructor-这个类的对象-就表示-构造方法。"><a href="#2-构造方法-Constructor-这个类的对象-就表示-构造方法。" class="headerlink" title="2.构造方法   Constructor 这个类的对象 就表示 构造方法。"></a>2.构造方法   Constructor 这个类的对象 就表示 构造方法。</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//返回一个包含 Constructor对象的数组， Constructor对象反映了由该 Class对象表示的类的所有公共构造函数</span></span><br><span class="line">Constructor&lt;?&gt;[] getConstructors?() </span><br><span class="line"><span class="comment">//返回反映由该 Class对象表示的类声明的所有构造函数的 Constructor对象的数组</span></span><br><span class="line">Constructor&lt;?&gt;[] getDeclaredConstructors?()</span><br></pre></td></tr></table></figure>
-
-<p><strong>获取无参和有参的构造方法</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Class&lt;?&gt; userClass = Class.forName(<span class="string">"com.demo.User"</span>);</span><br><span class="line">Constructor&lt;?&gt; con = userClass.getConstructor();</span><br><span class="line">Constructor&lt;?&gt; con = userClass.getConstructor(<span class="keyword">int</span>.class,String.class);</span><br></pre></td></tr></table></figure>
-
-<p><strong>获取私有构造并创建对象：</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取Class对象</span></span><br><span class="line">Class&lt;?&gt; userClass = Class.forName(<span class="string">"com.demo.User"</span>);</span><br><span class="line"><span class="comment">//private User(String name)</span></span><br><span class="line"><span class="comment">//Constructor&lt;T&gt; getDeclaredConstructor?(Class&lt;?&gt;... parameterTypes)</span></span><br><span class="line">Constructor&lt;?&gt; con = userClass.getDeclaredConstructor(String.class);</span><br><span class="line"><span class="comment">//暴力反射</span></span><br><span class="line"><span class="comment">//public void setAccessible?(boolean flag):值为true，取消访问检查</span></span><br><span class="line">con.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">Object obj = con.newInstance(<span class="string">"IConor"</span>);</span><br><span class="line">System.out.println(obj);</span><br></pre></td></tr></table></figure>
-
-<h5 id="3-成员变量-Field-这个类的对象-用来描述类中成员变量"><a href="#3-成员变量-Field-这个类的对象-用来描述类中成员变量" class="headerlink" title="3.成员变量   Field 这个类的对象 用来描述类中成员变量"></a>3.成员变量   Field 这个类的对象 用来描述类中成员变量</h5><p><strong>获取类中所有的成员变量：</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//返回一个 Field对象，该对象反映由该 Class对象表示的类或接口的指定公共成员字段</span></span><br><span class="line">Field[] getFields?()</span><br><span class="line"><span class="comment">//返回一个 Field对象，该对象反映由该 Class对象表示的类或接口的指定声明字段</span></span><br><span class="line">Field[] getDeclaredFields?()	</span><br><span class="line"><span class="comment">//便利获取所有的成员变量</span></span><br><span class="line">Field[] fields = userClass.getDeclaredFields();</span><br><span class="line"><span class="keyword">for</span>(Field field : fields) &#123;</span><br><span class="line">    System.out.println(field);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>获取公共和私有成员变量并赋值</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取Class对象</span></span><br><span class="line">Class&lt;?&gt; userClass = Class.forName(<span class="string">"com.demo.User"</span>);</span><br><span class="line"><span class="comment">//获取属性名为password的公共成员变量字段</span></span><br><span class="line"><span class="comment">//私有的改为xxx.getDeclaredField 并且设置 xxxField.setAccessible(true);</span></span><br><span class="line">Field passwordFiled = userClass.getField(<span class="string">"password"</span>);</span><br><span class="line"><span class="comment">//获取无参构造方法创建对象</span></span><br><span class="line">Constructor&lt;?&gt; con = userClass.getConstructor();</span><br><span class="line">Object obj = con.newInstance();</span><br><span class="line"><span class="comment">//给obj的成员变量password赋值为西安</span></span><br><span class="line">passwordFiled.set(obj,<span class="string">"123456"</span>);</span><br></pre></td></tr></table></figure>
-
-<h5 id="4-成员方法-Method-这个类的对象-用来描述类中的成员方法。"><a href="#4-成员方法-Method-这个类的对象-用来描述类中的成员方法。" class="headerlink" title="4.成员方法   Method 这个类的对象 用来描述类中的成员方法。"></a>4.成员方法   Method 这个类的对象 用来描述类中的成员方法。</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//返回一个包含 方法对象的数组， 方法对象反映由该 Class对象表示的类或接口的所有公共方法，包括由类或接口声明的对象以及从超类和超级接口继承的类</span></span><br><span class="line">Method[] getMethods?()</span><br><span class="line"><span class="comment">//返回一个包含 方法对象的数组， 方法对象反映由 Class对象表示的类或接口的所有声明方法，包括public，protected，default（package）访问和私有方法，但不包括继承方法</span></span><br><span class="line">Method[] getDeclaredMethods?()</span><br></pre></td></tr></table></figure>
-
-<p><strong>只讲一下私有的方法获取及调用，其他的都与上面大致相同</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Class&lt;?&gt; userClass = Class.forName(<span class="string">"com.demo.User"</span>);</span><br><span class="line">Constructor&lt;?&gt; con = userClass.getConstructor();</span><br><span class="line">Object obj = con.newInstance();</span><br><span class="line"><span class="comment">//从所有的方法对象里面，返回一个指定声明的function方法对象</span></span><br><span class="line">Method newMethod = userClass.getDeclaredMethod(<span class="string">"function"</span>);</span><br><span class="line"><span class="comment">//暴力反射</span></span><br><span class="line">newMethod.setAccessible(<span class="keyword">true</span>);</span><br><span class="line"><span class="comment">//调用方法</span></span><br><span class="line">newMethod.invoke(obj);</span><br></pre></td></tr></table></figure>
-
-<h3 id="反射的使用"><a href="#反射的使用" class="headerlink" title="反射的使用"></a>反射的使用</h3><p><strong>案例：可越过泛型检查</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ArrayList&lt;Integer&gt; array = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</span><br><span class="line">array.add(<span class="number">10</span>);</span><br><span class="line">Class&lt;? extends ArrayList&gt; c = array.getClass();</span><br><span class="line">Method m = c.getMethod(<span class="string">"add"</span>, Object.class);</span><br><span class="line">m.invoke(array,<span class="string">"hello"</span>);</span><br><span class="line">m.invoke(array,<span class="string">"world"</span>);</span><br><span class="line">m.invoke(array,<span class="string">"java"</span>);</span><br><span class="line">System.out.println(array);</span><br></pre></td></tr></table></figure>
-
-<h2 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h2><pre><code>web核心</code></pre><h2 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h2><pre><code>Spring 框架技术</code></pre>
+            <p>
+              反射反射的概念在Java虚拟机的运行状态中，对于任意一个类对象，都能够随意调用其任意方法和属性，像这样动态获取其信息和方法功能称为Java语言的反射机制。要想利用反射调用这个类，必须要先用类加载器加载该类的字节码文件对象。
+类加载器每一个类对象对应着一个class文件，用来描述该类的结构信息。
+类加
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/06/27/反射、动态代理及AOP/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -604,6 +601,8 @@
       <div class="back-to-top">
         <i class="fa fa-arrow-up"></i>
         
+          <span id="scrollpercent"><span>0</span>%</span>
+        
       </div>
     
 
@@ -701,6 +700,74 @@
 
 
   
+  
+  <script>
+    
+    function showTime(Counter) {
+      var entries = [];
+      var $visitors = $('.leancloud_visitors');
+
+      $visitors.each(function() {
+        entries.push( $(this).attr('id').trim() );
+      });
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url: { '$in': entries } }) })
+        .done(function({ results }) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.url;
+            var time = item.time;
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if (countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + '')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': '',
+                'X-LC-Key': '',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            if ($('.post-title-link').length >= 1) {
+              showTime(Counter);
+            }
+          
+        });
+    });
+  </script>
+
+
 
   
 
